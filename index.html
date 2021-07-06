@@ -1,0 +1,40 @@
+<html>
+<head></head>
+<body>
+<h1>Discord dynamic signature</h1>
+
+<script>
+
+    function onStart() {
+        var serverID = "725001235995951204";
+        console.log("Server: " + serverID);
+        var resp = httpGet("https://discord.com/api/guilds/" + serverID + "/widget.json");
+        jResp = JSON.parse(resp);
+        console.log(jResp);
+
+        var inviteCode = jResp.instant_invite.replace("https://discord.com/invite/", "");
+        var resp = httpGet("https://discord.com/api/v9/invites/" + inviteCode + "?with_counts=true&with_expiration=true");
+        var jInvite = JSON.parse(resp);
+
+        console.log(jInvite);
+
+        console.log({
+            online: jInvite.approximate_presence_count,
+            total: jInvite.approximate_member_count
+        })
+
+    }
+
+    function httpGet(theUrl) {
+        console.log("URI: " + theUrl);
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", theUrl, false); // false for synchronous request
+        xmlHttp.send(null);
+        return xmlHttp.responseText;
+    }
+
+    onStart()
+</script>
+
+</body>
+</html>
